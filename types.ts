@@ -6,6 +6,11 @@ export enum AppState {
   InRoom,
 }
 
+export interface StoryHighlight {
+  imageUrl: string;
+  description: string;
+}
+
 export interface UserProfile {
   name: string;
   age: number;
@@ -15,6 +20,8 @@ export interface UserProfile {
   birthdate?: string; // Format: YYYY-MM-DD
   badges?: string[];
   loveLanguages?: string[];
+  highlights?: StoryHighlight[];
+  dailyStreak?: number;
 }
 
 export interface Match {
@@ -37,3 +44,12 @@ export interface Message {
       artist: string;
     };
 }
+
+export interface CommunitySpark {
+  id: number;
+  type: 'fact' | 'poll' | 'quote';
+  title: string;
+  content: string;
+}
+
+export type MoodFilter = 'default' | 'candlelight' | 'neon-rave' | 'seaside-sunset';

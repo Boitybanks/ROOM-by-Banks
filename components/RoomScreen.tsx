@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef, FormEvent } from 'react';
-import { Match, Message, MessageSender } from '../types';
+import { Match, Message, MessageSender, MoodFilter } from '../types';
 import { generateChatResponse, generateZodiacInsight, analyzeChemistry } from '../services/geminiService';
 import { getZodiacSign } from '../services/zodiacService';
 import { AUDIO_TRACKS } from '../constants';
@@ -25,6 +25,7 @@ const RoomScreen: React.FC<RoomScreenProps> = ({ match, onExit }) => {
   const [isSongModalOpen, setIsSongModalOpen] = useState(false);
   const [audioMode, setAudioMode] = useState<AudioMode>('music');
   const [currentMusicTrack, setCurrentMusicTrack] = useState(AUDIO_TRACKS.smooth);
+  const [moodFilter, setMoodFilter] = useState<MoodFilter>('default');
   
   const chatEndRef = useRef<HTMLDivElement>(null);
   const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
@@ -148,6 +149,26 @@ const RoomScreen: React.FC<RoomScreenProps> = ({ match, onExit }) => {
     });
   };
 
+  const handleCycleMoodFilter = () => {
+    const filters: MoodFilter[] = ['default', 'candlelight', 'neon-rave', 'seaside-sunset'];
+    const currentIndex = filters.indexOf(moodFilter);
+    const nextIndex = (currentIndex + 1) % filters.length;
+    setMoodFilter(filters[nextIndex]);
+  };
+
+  const getMoodFilterClass = (filter: MoodFilter) => {
+    switch (filter) {
+      case 'candlelight':
+        return 'bg-amber-700 animate-flicker';
+      case 'neon-rave':
+        return 'bg-fuchsia-600/30 animate-pulse';
+      case 'seaside-sunset':
+        return 'bg-gradient-to-t from-orange-500/20 to-purple-500/30';
+      default:
+        return 'opacity-0';
+    }
+  };
+
   const backgroundImage = match.theme || 'https://picsum.photos/seed/room/400/800';
 
   if (isInitializing) {
@@ -161,8 +182,10 @@ const RoomScreen: React.FC<RoomScreenProps> = ({ match, onExit }) => {
   return (
     <div className="flex flex-col h-full bg-cover bg-center" style={{ backgroundImage: `url('${backgroundImage}')` }}>
       {isSongModalOpen && <DedicateSongModal onDedicate={handleDedicateSong} onClose={handleCloseSongModal} />}
-      <div className={`flex flex-col h-full backdrop-blur-sm transition-colors duration-500 ${lightsOn ? 'bg-black/60' : 'bg-black/80'}`}>
-        <header className="flex items-center justify-between p-3 border-b border-indigo-900/50">
+      <div className={`relative flex flex-col h-full backdrop-blur-sm transition-colors duration-500 ${lightsOn ? 'bg-black/60' : 'bg-black/80'}`}>
+        <div className={`absolute inset-0 w-full h-full transition-opacity duration-1000 pointer-events-none ${getMoodFilterClass(moodFilter)}`} />
+
+        <header className="relative z-10 flex items-center justify-between p-3 border-b border-indigo-900/50">
           <img src={match.matchedUser.photoUrl} alt={match.matchedUser.name} className="w-10 h-10 rounded-full object-cover" />
           <div className="text-center">
             <h2 className="font-bold text-lg">{match.matchedUser.name}</h2>
@@ -174,7 +197,7 @@ const RoomScreen: React.FC<RoomScreenProps> = ({ match, onExit }) => {
           <button onClick={onExit} className="text-gray-400 hover:text-white transition">Exit</button>
         </header>
 
-        <main className="flex-grow overflow-y-auto p-4 space-y-4">
+        <main className="relative z-10 flex-grow overflow-y-auto p-4 space-y-4">
           {messages.map((msg, index) => (
             <MessageBubble key={index} message={msg} />
           ))}
@@ -182,7 +205,7 @@ const RoomScreen: React.FC<RoomScreenProps> = ({ match, onExit }) => {
           <div ref={chatEndRef} />
         </main>
         
-        <footer className="p-2 border-t border-indigo-900/50">
+        <footer className="relative z-10 p-2 border-t border-indigo-900/50">
             <form onSubmit={handleSendMessage} className="flex items-center gap-2 p-2">
                 <input
                     type="text"
@@ -196,11 +219,13 @@ const RoomScreen: React.FC<RoomScreenProps> = ({ match, onExit }) => {
                 </button>
             </form>
             <RoomControls
-                onToggleLights={handleToggleLights}
-                onOpenSongModal={handleOpenSongModal}
                 lightsOn={lightsOn}
                 audioMode={audioMode}
+                moodFilter={moodFilter}
+                onToggleLights={handleToggleLights}
+                onOpenSongModal={handleOpenSongModal}
                 onCycleAudioMode={handleCycleAudioMode}
+                onCycleMoodFilter={handleCycleMoodFilter}
             />
         </footer>
       </div>

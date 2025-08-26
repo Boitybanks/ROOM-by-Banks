@@ -1,4 +1,4 @@
-import { UserProfile } from './types';
+import { UserProfile, CommunitySpark } from './types';
 
 export interface RoomTheme {
   name: string;
@@ -19,6 +19,10 @@ export const SWIPE_PROFILES: UserProfile[] = [
     birthdate: '1996-07-10', // Cancer
     badges: ['MLM', 'Trans Joy'],
     loveLanguages: ['Acts of Service', 'Quality Time'],
+    highlights: [
+      { imageUrl: 'https://picsum.photos/seed/alex-h1/200/200', description: 'My latest culinary creation!' },
+      { imageUrl: 'https://picsum.photos/seed/alex-h2/200/200', description: 'Summit views from last weekend.' },
+    ],
   },
   {
     name: 'Chloe',
@@ -29,6 +33,9 @@ export const SWIPE_PROFILES: UserProfile[] = [
     birthdate: '1999-04-25', // Taurus
     badges: ['WLW'],
     loveLanguages: ['Quality Time', 'Words of Affirmation'],
+    highlights: [
+      { imageUrl: 'https://picsum.photos/seed/chloe-h1/200/200', description: 'Work in progress.' },
+    ],
   },
   {
     name: 'Ben',
@@ -39,6 +46,7 @@ export const SWIPE_PROFILES: UserProfile[] = [
     birthdate: '1993-12-01', // Sagittarius
     badges: [],
     loveLanguages: ['Physical Touch'],
+    highlights: [],
   },
   {
     name: 'Sara',
@@ -49,6 +57,10 @@ export const SWIPE_PROFILES: UserProfile[] = [
     birthdate: '1995-02-20', // Pisces
     badges: ['WLW', 'Ace'],
     loveLanguages: ['Receiving Gifts'],
+    highlights: [
+      { imageUrl: 'https://picsum.photos/seed/sara-h1/200/200', description: 'My proudest bake yet!' },
+      { imageUrl: 'https://picsum.photos/seed/sara-h2/200/200', description: 'Currently reading this.' },
+    ],
   },
 ];
 
@@ -61,7 +73,48 @@ export const SPECIAL_MATCH_PROFILE: UserProfile = {
   birthdate: '1997-10-30', // Scorpio
   badges: ['Non-binary'],
   loveLanguages: ['Quality Time', 'Words of Affirmation'],
+  highlights: [
+    { imageUrl: 'https://picsum.photos/seed/orion-h1/200/200', description: 'The Andromeda Galaxy through my telescope.' },
+    { imageUrl: 'https://picsum.photos/seed/orion-h2/200/200', description: 'Favorite passage from a book on constellations.' },
+    { imageUrl: 'https://picsum.photos/seed/orion-h3/200/200', description: 'My synthwave setup.' },
+  ],
 };
+
+export const COMMUNITY_SPARKS: CommunitySpark[] = [
+  {
+    id: 1,
+    type: 'fact',
+    title: 'Queer History Fact',
+    content: 'The first Pride flag, designed by Gilbert Baker in 1978, originally had eight stripes. Pink stood for sexuality and turquoise for magic/art.',
+  },
+  {
+    id: 2,
+    type: 'quote',
+    title: 'Words to Live By',
+    content: '"To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment." - Ralph Waldo Emerson',
+  },
+  {
+    id: 3,
+    type: 'poll',
+    title: 'Community Poll',
+    content: 'What\'s the ultimate queer anthem? Discuss in the public rooms!',
+  },
+    {
+    id: 4,
+    type: 'fact',
+    title: 'Did You Know?',
+    content: 'Marsha P. Johnson, a Black trans woman, was a pivotal figure in the Stonewall Uprising and a lifelong advocate for LGBTQ+ rights and homeless youth.',
+  },
+];
+
+export const ACTIVITY_FEED_ITEMS: string[] = [
+  "🔥 Someone just matched with a charming Scorpio.",
+  "✨ A new conversation started in the Neon Arcade.",
+  "💬 Chloe and Sara are hitting it off!",
+  "👀 15 people are exploring the Town Square right now.",
+  "💖 A 'Quality Time' connection was just made.",
+];
+
 
 // NOTE: Using animated GIFs for immersive, looping room backgrounds.
 export const ROOM_THEMES: RoomTheme[] = [

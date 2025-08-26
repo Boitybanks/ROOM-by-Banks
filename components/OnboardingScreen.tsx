@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { UserProfile } from '../types';
+import { UserProfile, StoryHighlight } from '../types';
 import { BADGES, LOVE_LANGUAGES } from '../constants';
+import { XIcon } from './icons/XIcon';
 
 interface OnboardingScreenProps {
   onComplete: (profile: UserProfile) => void;
@@ -17,7 +18,11 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
     birthdate: '',
     badges: [],
     loveLanguages: [],
+    highlights: [],
   });
+  const [highlightImageUrl, setHighlightImageUrl] = useState('');
+  const [highlightDescription, setHighlightDescription] = useState('');
+
 
   const handleNext = () => setStep(prev => prev + 1);
   const handleBack = () => setStep(prev => prev - 1);
@@ -45,6 +50,25 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
     }));
   };
   
+  const handleAddHighlight = () => {
+    if (highlightImageUrl && highlightDescription && (profile.highlights?.length || 0) < 3) {
+      const newHighlight: StoryHighlight = {
+        imageUrl: highlightImageUrl,
+        description: highlightDescription,
+      };
+      setProfile(p => ({ ...p, highlights: [...(p.highlights || []), newHighlight] }));
+      setHighlightImageUrl('');
+      setHighlightDescription('');
+    }
+  };
+
+  const handleRemoveHighlight = (index: number) => {
+    setProfile(p => ({
+      ...p,
+      highlights: p.highlights?.filter((_, i) => i !== index)
+    }));
+  };
+
   const TagButton: React.FC<{ label: string; isSelected: boolean; onClick: () => void;}> = ({label, isSelected, onClick}) => (
      <button
         type="button"
@@ -150,10 +174,60 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
             </div>
             <div className="flex gap-4 mt-auto pt-4">
                 <button onClick={handleBack} className="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-lg transition-all">Back</button>
-                <button onClick={handleSubmit} disabled={!profile.photoUrl} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-lg transition-all disabled:bg-gray-600 disabled:cursor-not-allowed">Start Swiping</button>
+                <button onClick={handleNext} disabled={!profile.photoUrl} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-lg transition-all disabled:bg-gray-600 disabled:cursor-not-allowed">Next</button>
             </div>
           </div>
         );
+      case 4:
+        const canAddMoreHighlights = (profile.highlights?.length || 0) < 3;
+        return (
+          <div className="flex flex-col h-full">
+            <h2 className="text-2xl font-bold text-center text-indigo-300 mb-2">Showcase Your Vibe</h2>
+            <p className="text-center text-gray-400 mb-4">Add up to 3 "Story Highlights" to your profile.</p>
+
+            <div className="flex-grow space-y-2 overflow-y-auto pr-2 pb-2">
+              {profile.highlights?.map((h, index) => (
+                <div key={index} className="flex items-center gap-3 bg-gray-800/50 p-2 rounded-lg">
+                  <img src={h.imageUrl} alt="Highlight" className="w-12 h-12 rounded-md object-cover flex-shrink-0"/>
+                  <p className="text-sm text-gray-300 flex-grow truncate">{h.description}</p>
+                  <button onClick={() => handleRemoveHighlight(index)} className="p-1 text-gray-500 hover:text-red-400">
+                    <XIcon className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+              {profile.highlights?.length === 0 && (
+                  <p className="text-center text-gray-500 pt-8">No highlights yet. Add one below!</p>
+              )}
+            </div>
+
+            {canAddMoreHighlights && (
+              <div className="space-y-2 border-t border-indigo-900/50 pt-3">
+                 <input 
+                    type="text"
+                    placeholder="Highlight Image URL"
+                    value={highlightImageUrl}
+                    onChange={(e) => setHighlightImageUrl(e.target.value)}
+                    className="w-full bg-gray-800 border border-indigo-800 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+                 />
+                 <textarea 
+                    placeholder="Short description..."
+                    value={highlightDescription}
+                    onChange={(e) => setHighlightDescription(e.target.value)}
+                    rows={2}
+                    className="w-full bg-gray-800 border border-indigo-800 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm resize-none"
+                  />
+                  <button type="button" onClick={handleAddHighlight} disabled={!highlightImageUrl || !highlightDescription} className="w-full bg-indigo-700/50 hover:bg-indigo-700/70 text-indigo-200 text-sm font-bold py-2 rounded-lg transition-all disabled:bg-gray-600 disabled:cursor-not-allowed">
+                    Add Highlight
+                  </button>
+              </div>
+            )}
+            
+            <div className="flex gap-4 mt-auto pt-4">
+                <button onClick={handleBack} className="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-lg transition-all">Back</button>
+                <button onClick={handleSubmit} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-lg transition-all">Start Swiping</button>
+            </div>
+          </div>
+        )
       default:
         return null;
     }

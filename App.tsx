@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { AppState, UserProfile, Match } from './types';
 import OnboardingScreen from './components/OnboardingScreen';
-import SwipeScreen from './components/SwipeScreen';
+import TownSquareScreen from './components/TownSquareScreen';
 import MatchAnimation from './components/MatchAnimation';
 import RoomScreen from './components/RoomScreen';
 import ThemeSelectionScreen from './components/ThemeSelectionScreen';
@@ -12,8 +12,13 @@ const App: React.FC = () => {
   const [match, setMatch] = useState<Match | null>(null);
 
   const handleOnboardingComplete = useCallback((profile: UserProfile) => {
-    setUserProfile(profile);
+    // Initialize daily streak for new users
+    setUserProfile({ ...profile, dailyStreak: 0 });
     setAppState(AppState.Swiping);
+  }, []);
+
+  const handleUpdateUserProfile = useCallback((updatedProfile: Partial<UserProfile>) => {
+    setUserProfile(prev => prev ? { ...prev, ...updatedProfile } : null);
   }, []);
 
   const handleMatch = useCallback((matchedProfile: UserProfile) => {
@@ -48,7 +53,7 @@ const App: React.FC = () => {
       case AppState.Onboarding:
         return <OnboardingScreen onComplete={handleOnboardingComplete} />;
       case AppState.Swiping:
-        return <SwipeScreen onMatch={handleMatch} />;
+        return userProfile && <TownSquareScreen userProfile={userProfile} onMatch={handleMatch} onUpdateProfile={handleUpdateUserProfile} />;
       case AppState.Matched:
         return match && <MatchAnimation match={match} onEnterRoom={handleProceedToThemeSelection} />;
       case AppState.ThemeSelection:

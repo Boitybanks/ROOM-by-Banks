@@ -20,6 +20,27 @@ const SwipeCard: React.FC<SwipeCardProps> = ({ profile }) => {
                     </span>
                 ))}
             </div>
+
+            {profile.highlights && profile.highlights.length > 0 && (
+              <div className="mt-4">
+                <div className="flex items-center gap-3">
+                  {profile.highlights.map((highlight, index) => (
+                    <div key={index} className="group relative">
+                       <img 
+                          src={highlight.imageUrl} 
+                          alt={`Highlight ${index + 1}`} 
+                          className="w-14 h-14 rounded-full object-cover border-2 border-indigo-400"
+                        />
+                        <div className="absolute bottom-full mb-2 w-40 bg-gray-900 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none text-center transform -translate-x-1/2 left-1/2">
+                          {highlight.description}
+                          <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-gray-900"></div>
+                        </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
              <div className="flex-grow min-h-[1rem]"></div>
             {(profile.badges && profile.badges.length > 0) || (profile.loveLanguages && profile.loveLanguages.length > 0) ? (
                  <div className="border-t border-white/20 pt-3 mt-3 space-y-2">

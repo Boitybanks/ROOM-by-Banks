@@ -1,19 +1,31 @@
 import React from 'react';
+import { MoodFilter } from '../types';
 import { LightbulbIcon } from './icons/LightbulbIcon';
 import { MusicNoteIcon } from './icons/MusicNoteIcon';
 import { SpeakerWaveIcon } from './icons/SpeakerWaveIcon';
 import { SpeakerXMarkIcon } from './icons/SpeakerXMarkIcon';
 import { SoundWaveIcon } from './icons/SoundWaveIcon';
+import { WandIcon } from './icons/WandIcon';
 
 interface RoomControlsProps {
+    lightsOn: boolean;
+    audioMode: 'music' | 'relaxing' | 'off';
+    moodFilter: MoodFilter;
     onToggleLights: () => void;
     onOpenSongModal: () => void;
     onCycleAudioMode: () => void;
-    lightsOn: boolean;
-    audioMode: 'music' | 'relaxing' | 'off';
+    onCycleMoodFilter: () => void;
 }
 
-const RoomControls: React.FC<RoomControlsProps> = ({ onToggleLights, onOpenSongModal, lightsOn, audioMode, onCycleAudioMode }) => {
+const RoomControls: React.FC<RoomControlsProps> = ({ 
+    lightsOn, 
+    audioMode, 
+    moodFilter,
+    onToggleLights, 
+    onOpenSongModal, 
+    onCycleAudioMode,
+    onCycleMoodFilter
+}) => {
     
     const renderAudioIcon = () => {
         switch(audioMode) {
@@ -36,6 +48,15 @@ const RoomControls: React.FC<RoomControlsProps> = ({ onToggleLights, onOpenSongM
                 return 'Turn music on';
         }
     }
+    
+    const getMoodAriaLabel = () => {
+        switch(moodFilter) {
+            case 'default': return 'Set candlelight mood';
+            case 'candlelight': return 'Set neon rave mood';
+            case 'neon-rave': return 'Set seaside sunset mood';
+            case 'seaside-sunset': return 'Remove mood filter';
+        }
+    }
 
     return (
         <div className="flex items-center justify-center gap-4 px-2 pb-1">
@@ -47,6 +68,9 @@ const RoomControls: React.FC<RoomControlsProps> = ({ onToggleLights, onOpenSongM
             </button>
             <button onClick={onCycleAudioMode} className="p-3 rounded-lg bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 transition" aria-label={getAudioAriaLabel()}>
                 {renderAudioIcon()}
+            </button>
+            <button onClick={onCycleMoodFilter} className="p-3 rounded-lg bg-pink-500/20 hover:bg-pink-500/30 text-pink-300 transition" aria-label={getMoodAriaLabel()}>
+                <WandIcon className="w-5 h-5" />
             </button>
        </div>
     );
